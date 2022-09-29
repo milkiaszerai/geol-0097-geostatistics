@@ -1,0 +1,136 @@
+---
+title: "Getting Started with R"
+output: html_notebook
+---
+
+*Milkias Z. SEMEREAB*
+
+*University of Liège*
+
+*September 29, 2022*
+
+
+---
+
+### **Arithmetic with R**
+
+In its most basic form, R can be used as a simple calculator. R has the following arithmetic operators:
+
+* Addition: +
+* Subtraction: -
+* Multiplication: *
+* Division: /
+* Exponentiation: ^
+* Modulo: %%
+
+The last two might need some explaining:
+The ^ operator raises the number to its left to the power of the number to its right: for example 3^2 is 9.
+The modulo returns the remainder of the division of the number to the left by the number on its right, for example 5 modulo 3 or 5 %% 3 is 2.
+
+```{r}
+# An addition
+5 + 5 
+# A subtraction
+5 - 5 
+# A multiplication
+3 * 5
+ # A division
+(5 + 5) / 2 
+# Exponentiation
+2 ^ 5
+# Modulo
+28 %% 6
+```
+
+### **Variable Assignment**
+
+A basic concept in (statistical) programming is called a variable.
+
+A variable allows you to store a value (e.g. 4) or an object (e.g. a function description) in R. You can then later use this variable's name to easily access the value or the object that is stored within this variable.
+
+You can assign a value 4 to a variable *my_var* with the command:
+
+```{r}
+# Assign the value 42 to x
+x <- 42
+
+# Print out the value of the variable x
+print (x)
+
+# "=" can also be used as assignment operator
+y = 54 
+
+print(y)
+```
+
+### **Basic data types in R** 
+R works with numerous data types. Some of the most basic types to get started are:
+
+* Decimal values like 4.5 are called *numerics*.
+* Whole numbers like 4 are called *integers*. Integers are also numerics.
+* Boolean values (TRUE or FALSE) are called *logical*.
+* Text (or string) values are called *characters*.
+
+```{r}
+# create a numeric called  my_numeric with value 42
+my_numeric = 42
+print(my_numeric)
+
+# create a string called my_character and assign it to be "universe"
+my_character = "universe"
+print(my_character)
+
+# create a logical variable called my_logical that is FALSE
+my_logical = FALSE
+print(my_logical)
+```
+Note: how the quotation marks in the editor indicate that "some text" is a string.
+
+What's that data type? \
+
+If we add 5 + "six", we get an error due to a mismatch in data types. You can avoid such embarrassing situations by checking the data type of a variable beforehand. You can do this with the *class() function*
+```{r}
+# Check class of my_numeric
+class(my_numeric)
+
+# Check class of my_character
+class(my_character)
+
+# Check class of my_logical
+class(my_logical)
+```
+### **Vectors** 
+Vectors are one-dimension arrays that can hold numeric data, character data, or logical data. In other words, a vector is a simple tool to store data. \
+In R, you create a vector with the combine function c(). You place the vector elements separated by a comma between the parentheses. For example:
+```{r}
+numeric_vector <- c(1, 10, 49)
+print(numeric_vector)
+character_vector <- c("a", "b", "c")
+print(character_vector)
+boolean_vector <- c(TRUE, FALSE, TRUE)
+print(boolean_vector)
+```
+You can give a name to the elements of a vector with the names() function. Have a look at this example:
+```{r}
+some_vector <- c("John Doe", "poker player")
+names(some_vector) <- c("Name", "Profession")
+print(some_vector)
+```
+
+Once you have created these vectors in R, you can use them to do calculations.
+
+
+
+
+
+<!--
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+--> 
