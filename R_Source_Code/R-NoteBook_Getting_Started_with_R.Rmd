@@ -1,35 +1,34 @@
 ---
 title: "Getting Started with R"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 *Milkias Z. SEMEREAB*
 
-*University of Liège*
+*GEOL0097-Geostatistics, University of Liège*
 
 *September 29, 2022*
 
-
----
+------------------------------------------------------------------------
 
 ### **Arithmetic with R**
 
 In its most basic form, R can be used as a simple calculator. R has the following arithmetic operators:
 
-* Addition: +
-* Subtraction: -
-* Multiplication: *
-* Division: /
-* Exponentiation: ^
-* Modulo: %%
+-   Addition: +
+-   Subtraction: -
+-   Multiplication: \*
+-   Division: /
+-   Exponentiation: \^
+-   Modulo: %%
 
-The last two might need some explaining:
-The ^ operator raises the number to its left to the power of the number to its right: for example 3^2 is 9.
-The modulo returns the remainder of the division of the number to the left by the number on its right, for example 5 modulo 3 or 5 %% 3 is 2.
+The last two might need some explaining: The \^ operator raises the number to its left to the power of the number to its right: for example 3\^2 is 9. The modulo returns the remainder of the division of the number to the left by the number on its right, for example 5 modulo 3 or 5 %% 3 is 2.
 
 ```{r}
 # An addition
-5 + 5 
+5 + 4
 # A subtraction
 5 - 5 
 # A multiplication
@@ -63,13 +62,14 @@ y = 54
 print(y)
 ```
 
-### **Basic data types in R** 
+### **Basic data types in R**
+
 R works with numerous data types. Some of the most basic types to get started are:
 
-* Decimal values like 4.5 are called *numerics*.
-* Whole numbers like 4 are called *integers*. Integers are also numerics.
-* Boolean values (TRUE or FALSE) are called *logical*.
-* Text (or string) values are called *characters*.
+-   Decimal values like 4.5 are called *numerics*.
+-   Whole numbers like 4 are called *integers*. Integers are also numerics.
+-   Boolean values (TRUE or FALSE) are called *logical*.
+-   Text (or string) values are called *characters*.
 
 ```{r}
 # create a numeric called  my_numeric with value 42
@@ -84,11 +84,13 @@ print(my_character)
 my_logical = FALSE
 print(my_logical)
 ```
+
 Note: how the quotation marks in the editor indicate that "some text" is a string.
 
-What's that data type? \
+**What's that data type?**\
 
 If we add 5 + "six", we get an error due to a mismatch in data types. You can avoid such embarrassing situations by checking the data type of a variable beforehand. You can do this with the *class() function*
+
 ```{r}
 # Check class of my_numeric
 class(my_numeric)
@@ -99,9 +101,12 @@ class(my_character)
 # Check class of my_logical
 class(my_logical)
 ```
-### **Vectors** 
-Vectors are one-dimension arrays that can hold numeric data, character data, or logical data. In other words, a vector is a simple tool to store data. \
-In R, you create a vector with the combine function c(). You place the vector elements separated by a comma between the parentheses. For example:
+
+### **Vectors**
+
+Vectors are one-dimension arrays that can hold numeric data, character data, or logical data. In other words, a vector is a simple tool to store data.\
+In R, you create a vector with the **combine function c()**. You place the vector elements separated by a comma between the parentheses. For example:
+
 ```{r}
 numeric_vector <- c(1, 10, 49)
 print(numeric_vector)
@@ -110,17 +115,348 @@ print(character_vector)
 boolean_vector <- c(TRUE, FALSE, TRUE)
 print(boolean_vector)
 ```
-You can give a name to the elements of a vector with the names() function. Have a look at this example:
+
+You can give a name to the elements of a vector with the *names()* function. Have a look at this example:
+
 ```{r}
-some_vector <- c("John Doe", "poker player")
-names(some_vector) <- c("Name", "Profession")
-print(some_vector)
+messi_vector = c(170, 67, 35, 3)
+names(messi_vector) <- c("height_cm", "weight_kg", "age", "children")
+print(messi_vector)
 ```
 
-Once you have created these vectors in R, you can use them to do calculations.
+To **select specific elements** of the vector (and later matrices, data frames, …), you can use square brackets. Between the square brackets, you indicate what elements to select. For example, to select the first and third elements of the messi_vector:
+```{r}
+element_1 = messi_vector[1]
+element_3 = messi_vector[3]
+print(element_1)
+print(element_3)
+
+# For vectors with names for its elements, you can also alterantively select specific elements by using name index instead of number index
+messi_weight = messi_vector["weight_kg"]
+messi_children = messi_vector["children"]
+print(messi_weight)
+print(messi_children)
+
+# To select multiple elements from a vector, you indicate between the brackets what elements should be selected. 
+messi_1_2 = messi_vector[c(1,2)]
+print(messi_1_2)
+
+# or also 
+messi_weig_heig = messi_vector[c("height_cm", "weight_kg")]
+print(messi_weig_heig)
+
+# Selecting multiple elements with c(2, 3, 4) is not very convenient. Many statisticians are lazy people by nature, so they created an easier way to do this: c(2, 3, 4) can be abbreviated to 2:4, which generates a vector with all natural numbers from 2 up to 4.
+
+messi_bio = messi_vector[1:3]
+print(messi_bio)
+```
+**Notice** that the first element in a vector has index 1, not 0 as in many other programming languages.
 
 
+Once you have create vectors in R, you can use them to do calculations using R built-in functions as shown in the example below:
+```{r}
+# Create vectors to store grades of every course for Thomas and Victoria
+grades_thomas <- c(14, 15, 16, 7, 14, 9)
+grades_victoria <- c(12, 8, 17, 15, 15, 13)
+names(grades_thomas) = c("math", "english", "physics", "chemistry", "IT", "biology")
+names(grades_victoria) = c("math", "english", "physics", "chemistry", "IT", "biology")
 
+# display the two grade vectors 
+print(grades_thomas)
+print(grades_victoria)
+
+# Take the sum of the two vectors (element-wise addition) and assign it to new variables
+total_grade <- grades_thomas + grades_victoria
+print (total_grade)
+
+# calculate the sum of  grades for thomas using the sum() function 
+total_thomas = sum(grades_thomas)
+print(total_thomas)
+# calculate the sum of  grades for victoria using the sum() function
+total_victoria = sum(grades_victoria)
+print(total_victoria)
+
+# Find  the maximum grade earned by Thomas using the max() function
+thomas_max = max(grades_thomas)
+print(thomas_max)
+# Find  the minimum grade earned by Thomas using the min() function
+thomas_min = min(grades_thomas)
+print(thomas_min)
+## Find  the average grade earned by Thomas using the mean() function
+thomas_avg = mean(grades_thomas)
+print(thomas_avg)
+
+```
+
+
+##### Selection by comparison    
+
+The (logical) comparison operators known to R are:
+
+- **<** for less than
+- **>** for greater than
+- **<=** for less than or equal to
+- **>=** for greater than or equal to
+- **==** for equal to each other
+- **!=** not equal to each other
+
+As seen in the previous chapter, stating 6 > 5 returns *TRUE*. The nice thing about R is that you can use these comparison operators also on vectors. For example:
+
+```{r}
+# Which courses have Thomas and Victoria failed ? (passing grade = 10)
+grades_thomas >= 10
+grades_victoria >= 10
+
+# Which courses have Thomas and Victoria got excellent ? (excellent > = 17)
+
+grades_thomas >= 17
+grades_victoria >= 17
+
+# You can use the output of the comparison operators and put it inside [] to select the elements which return TRUE. Example: Which courses have Thomas and Victoria failed ?  
+grades_thomas[grades_thomas < 10]
+grades_victoria[grades_victoria < 10]
+```
+
+**Excercise:** After one week in Las Vegas and played poker and roulette, you decide that it is time to start using your data analytical superpowers.  
+
+Before doing a first analysis, you decide to first collect all the winnings and losses for the last week:
+
+For poker_vector:
+
+- On Monday you won $140
+- Tuesday you lost $50
+- Wednesday you won $20
+- Thursday you lost $120
+- Friday you won $240
+
+For roulette_vector:
+
+- On Monday you lost $24
+- Tuesday you lost $50
+- Wednesday you won $100
+- Thursday you lost $350
+- Friday you won $10 
+
+**Task 1:** To be able to use this data in R, create vectors for poker and roulette and store them into variables named poker_vector and roulette_vector from Monday to Friday. 
+
+**Task 2:** Assign days (Monday, Tuesday, Wednesday, Thursday & Friday) as names of elements for poker_vector and roulette_vector. Then print out the two vectors.      
+
+**Task 3:** How much you won/lost on each day? Assign the value to variable called total_daily. 
+
+**Task 4:** Calculate the total amount of money that you have won/lost with poker and assign to the variable total_poker. Do the same for roulette and assign it to total_roulette. Print out both variables. 
+
+**Task 5:** Now that you have the totals for roulette and poker, you can easily calculate the sum of all gains and losses of the week and assign it as total_week. Print out total_week. 
+
+**Task 6:** Assign the poker results of Wednesday to the variable poker_wednesday. 
+
+**Task 7:** Assign the poker results of Tuesday, Wednesday and Thursday to the variable poker_midweek.
+
+**Task 8:** Assign to roulette_selection_vector the roulette results from Tuesday up to Friday. Make use of colon (:) for vector subsetting. 
+
+**Task 9:** Select the first three elements in poker_vector by using their names: "Monday", "Tuesday" and "Wednesday". Assign the result of the selection to poker_start. Then calculate the average of the values in poker_start with the. Print out the result so you can inspect it.
+
+**Task 10:** Check which elements in poker_vector are positive (i.e. > 0) and assign this to selection_vector.Print out selection_vector so you can inspect it. The printout tells you whether you won (TRUE) or lost (FALSE) any money for each day. Then Use selection_vector in square brackets to assign the amounts that you won on the profitable days to the variable poker_winning_days. 
+
+
+### **Matrix** 
+
+In R, a matrix is a collection of elements of the same data type (numeric, character, or logical) arranged into a fixed number of rows and columns. Since you are only working with rows and columns, a matrix is called two-dimensional.
+
+You can construct a matrix in R with the **matrix()** function. Consider the following example:
+
+```{r}
+matrix(1:9, byrow = TRUE, nrow = 3)
+```
+In the matrix() function:
+
+- The first argument is the collection of elements that R will arrange into the rows and columns of the matrix. Here, we use 1:9 which is a shortcut for c(1, 2, 3, 4, 5, 6, 7, 8, 9).
+- The argument *byrow* indicates that the matrix is filled by the rows. If we want the matrix to be filled by the columns, we just place *byrow = FALSE*.
+- The third argument *nrow* indicates that the matrix should have three rows.
+
+In the following exercises you will analyze the box office numbers of the Star Wars franchise. Below three vectors are defined. Each one represents the box office numbers from the first three Star Wars movies. The first element of each vector indicates the US box office revenue, the second element refers to the Non-US box office (source: Wikipedia).
+
+```{r}
+# Box office Star Wars (in millions!)
+new_hope <- c(460.998, 314.4)
+empire_strikes <- c(290.475, 247.900)
+return_jedi <- c(309.306, 165.8)
+
+# Use c() function to combine the three vectors into one vector. Call this vector box_office.
+box_office <- c(new_hope, empire_strikes, return_jedi)
+
+# Construct star_wars_matrix
+star_wars_matrix <- matrix(box_office, byrow=TRUE, nrow=3)
+print(star_wars_matrix)
+```
+To help you remember what is stored in star_wars_matrix, you would like to add the names of the movies for the rows. Not only does this help you to read the data, but it is also useful to select certain elements from the matrix.
+
+Similar to vectors, you can add names for the rows and the columns of a matrix using the functions *colnames()* and *rownames()*. 
+
+```{r}
+# Vectors region and titles.You will need these vectors to name the columns and rows of star_wars_matrix respectively. 
+region <- c("US", "non-US")
+titles <- c("A New Hope", "The Empire Strikes Back", "Return of the Jedi")
+
+# Name the columns with region
+colnames(star_wars_matrix) = region
+
+# Name the rows with titles
+rownames(star_wars_matrix) = titles
+
+# Print out star_wars_matrix
+print(star_wars_matrix)
+```
+
+To calculate the total box office revenue for the three Star Wars movies, you have to take the sum of the US revenue column and the non-US revenue column.
+
+In R, the function *rowSums()* conveniently calculates the totals for each row of a matrix. This function creates a new vector:
+
+```{r}
+# Calculate worldwide box office figures
+worldwide_vector <- rowSums(star_wars_matrix)
+print(worldwide_vector)
+```
+Just like *rowSums()*, we have another built-in R function that calculates the sum of a column. The *colSums()* function takes a matrix and returns the sum of the columns. 
+
+```{r}
+# Total revenue for US and non-US
+total_revenue_vector <- colSums(star_wars_matrix)
+
+# Print out total_revenue_vector
+print(total_revenue_vector)
+```
+**Selection of matrix elements:** Similar to vectors, you can use the square brackets [ ] to select one or multiple elements from a matrix. Whereas vectors have one dimension, matrices have two dimensions. You should therefore use a comma to separate the rows you want to select from the columns. For example:
+
+- my_matrix[1,2] selects the element at the first row and second column.
+- my_matrix[1:3,2:4] results in a matrix with the data on the rows 1, 2, 3 and columns 2, 3, 4.
+
+If you want to select all elements of a row or a column, no number is needed before or after the comma, respectively:
+
+- my_matrix[,1] selects all elements of the first column.
+- my_matrix[1,] selects all elements of the first row.
+
+```{r}
+# Select the non-US revenue for all movies
+non_us_all <- star_wars_matrix[,2]
+print(non_us_all)
+# Average non-US revenue
+mean(non_us_all)
+  
+# Select the non-US revenue for first two movies
+non_us_some <- star_wars_matrix[1:2,2]
+print(non_us_some)
+# Average non-US revenue for first two movies
+mean(non_us_some)
+```
+
+**An arithmetic with matrices:** Similar to what we have learned with vectors, the standard operators like +, -, /, *, etc. work in an element-wise way on matrices in R.
+
+For example, 2 * my_matrix multiplies each element of my_matrix by two.
+
+Assume that the price of a ticket was 5 dollars. Simply dividing the box office numbers by this ticket price gives you the number of visitors.
+```{r}
+# Estimate the visitors
+visitors <- star_wars_matrix / 5
+  
+# Print the estimate to the console
+print(visitors)
+
+# From the visitors matrix, select the entire first column, representing the number of visitors in the US. Store this selection as us_visitors.
+us_visitors <- visitors[,1]
+print(us_visitors)
+
+# Calculate the average number of US visitors.;
+mean(us_visitors)
+```
+
+### **Matrix**
+
+Most datasets you will be working with will be stored as data frames. Remember that all the elements that you put in a matrix should be of the same type. Back then, your dataset on Star Wars only contained numeric elements.
+
+When doing a market research survey, however, you often have questions such as:
+
+- 'Are you married?' or 'yes/no' questions (logical)
+- 'How old are you?' (numeric)
+- 'What is your opinion on this product?' or other 'open-ended' questions (character)
+- etc…
+
+The output, namely the respondents' answers to the questions formulated above, is a dataset of different data types. You will often find yourself working with datasets that contain different data types instead of only one.
+
+A data frame has the variables of a dataset as columns and the observations as rows. 
+
+The **mtcars dataset** is a built-in dataset in R that contains measurements on 11 different attributes for 32 different cars. We will analyze the dataset below:
+
+```{r}
+# What is the type of the data type ? use the class() function
+class(mtcars)
+
+# Print out built-in R data frame "mtcars" 
+mtcars 
+```
+
+
+Wow, that is a lot of cars!
+
+Working with large datasets is very common in data analysis. When you work with large datasets and data frames, your first task as a statistician is to develop a clear understanding of its structure and main elements. Therefore, it is often useful to show only a small part of the entire dataset.
+
+The function *head()* enables you to show the first observations of a data frame. 
+
+```{r}
+# Call head() on mtcars
+head(mtcars)
+```
+
+Another method that is often used to get a rapid overview of your data is the function *str()*. The function str() shows you the structure of your dataset:
+```{r}
+# Investigate the structure of mtcars
+str(mtcars)
+```
+**Selection of data frame elements:** Similar to vectors and matrices, you select elements from a data frame with the help of square brackets [ ]. By using a comma, you can indicate what to select from the rows and the columns respectively. For example:
+
+- my_df[1,2] selects the value at the first row and second column in my_df.
+- my_df[1:3,2:4] selects rows 1, 2, 3 and columns 2, 3, 4 in my_df.
+
+Sometimes you want to select all elements of a row or column. For example, my_df[1, ] selects all elements of the first row. 
+
+```{r}
+# Print out horse power (hp) of the Mazda RX4 (row 1, column 4)
+mtcars[1,3]
+
+# Print out data for Datsun 710 (entire third row)
+mtcars[3,]
+```
+
+Instead of using numerics to select elements of a data frame, you can also use the variable names to select columns of a data frame.
+
+```{r}
+# Select the number of cylinders (cyl) for the first 8 cars. 
+mtcars[1:8, "cyl"]
+```
+
+You will often want to select an entire column, namely one specific variable from a data frame. If you want to select all elements of the variable mpg (miles per gallon, both of these will do the trick:
+
+- mtcars[, 1]
+- mtcars[, "mpg"]
+
+However, there is a short-cut. If your columns have names, you can use the $ sign:
+
+```{r}
+mtcars$mpg
+```
+**Summarizing dataframe:** We can use the summary() function to quickly summarize each variable in the dataset:
+```{r}
+#summarize mtcars dataset
+summary(mtcars)
+```
+
+### **Some Useful R Functions**
+
+- help(): provides access to the documentation pages for R functions, data sets, and other objects
+- length(object): number of elements or components
+- str(object): structure of an object
+- class(object): class or type of an object
+- ls(): list current objects
+- rm(object): delete an object;
 
 
 <!--
@@ -133,4 +469,4 @@ Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by press
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
---> 
+-->
