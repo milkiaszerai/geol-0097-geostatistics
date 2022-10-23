@@ -1,8 +1,9 @@
+# Import the important libraries/packages
 
 library(lattice)
 library(misc3d)
-library(plot3D)
-library(corrplot)
+library(plot3D)      #scatter plots
+library(corrplot)    #correlation matrix
 library(Rcpp)
 library(RGeostats)
 library(fields)
@@ -12,13 +13,25 @@ library(fields)
 getwd()
 
 # Import Data
-data=read.csv("meuse_data.csv")
-str(data)
+data_1=read.csv("meuse_data.csv")
+class(data_1)
+
+head(data)
+tail(data)
 
 str (data)
 
+
+# Stat
+
+summary(data[,3:6])
+
 ##Visualization of samples location
-plot(data[,1],data[,2],pch=10,cex=0.5, xlab = "Easting(m)", ylab = "Northing(m)",main="Locations",asp=1)
+plot()
+
+plot(data[,1],data[,2],pch=15,cex=0.5, xlab = "Easting(m)", ylab = "Northing(m)",main="Locations",asp=1)
+
+
 
 
 ##Visualization of heavy metal concentrations##
@@ -47,7 +60,7 @@ summary(data[,3:6])
 
 
 ##Display histograms and boxplots of all four heavy metals concentrations
-hist(data$cadmium,col="red", xlab="Values",main="cadmium concentrations")
+hist(data$cadmium,col="blue", xlab="Values",main="cadmium concentrations")
 hist(data$copper,col="blue", xlab="Values",main="copper concentrations")
 hist(data$lead,col="blue", xlab="Values",main="lead concentrations")
 hist(data$zinc,col="blue", xlab="Values",main="zinc concentrations")
@@ -57,6 +70,9 @@ par(mfrow=c(2,2))
 for(j in 1:4)
   {hist(data[,j+2],col="blue", xlab="Values",main=colnames(data)[j+2])}
 
+
+
+
 #transform the screen back to normal
 par(mfrow=c(1,1))
 boxplot(data$cadmium,col="blue", xlab="Values",main="cadmium concentrations")
@@ -64,10 +80,32 @@ boxplot(data$copper,col="blue", xlab="Values",main="copper concentrations")
 boxplot(data$lead,col="blue", xlab="Values",main="lead concentrations")
 boxplot(data$zinc,col="blue", xlab="Values",main="zinc concentrations")
 
+
+
 #using loop:
 par(mfrow=c(2,2))
+
+
+
 for(j in 1:4){
 boxplot(data[,j+2],col="blue", xlab="Values",main=colnames(data)[j+2])}
+
+
+v = c(1,2,3,4,8)
+
+for (j in 1:5) {
+  print(v[j])
+}
+
+
+
+
+
+
+
+
+
+
 
 # Log-transform the highly-skewed distribution of heavy metal concentration.
 data$logCd=log10(data$cadmium)
@@ -75,6 +113,8 @@ data$logCu=log10(data$copper)
 data$logPb=log10(data$lead)
 data$logZn=log10(data$zinc)
 
+
+str(data)
 
 #Compute the main descriptive univariate statistics of log transformed data
 summary(data[,14:17])
@@ -91,11 +131,18 @@ for(j in 1:4){
 
 
 
+par(mfrow=c(1,2))
+for(j in 1:4){
+  hist(data[,j+2],col="blue", xlab="Values",main=colnames(data)[j+2])
+  
+  hist(data[,j+13],col="red", xlab=" Log Values",main=colnames(data)[j+13])}
+
+
+
 ## BIVARIATE STATISTICS
 
 #Plot scatter plots
-plot(data$logZn ~ data$logCu,xlab=expression(paste("log"[10],"(Cu)",sep="")), 
-ylab=expression(paste("log"[10],"(Zn)",sep="")))
+plot(data$cadmium ~ data$zinc, xlab= "cd", ylab="zinc")
 
 # Different one (conventional method)
 plot(data[,15],data[,17],pch=10,cex=0.5, xlab = "log Cu", ylab = "Log Zn",main="Locations",asp=1)
@@ -108,16 +155,16 @@ data[ix,]
 
 
 #Compute the Pearson correlation matrix
-CorMat<- cor(data[,3:6])
-print(CorMat) 
+CorMatrix = cor(data[,3:6])
+print(CorMatrix) 
 
 CorMatlog<- cor(data[,14:17])
 print(CorMat) 
 
 #Compute for log-transformed variables
 
-library(corrplot,quietly=TRUE,verbose=FALSE)
-corrplot(CorMat)
+
+corrplot(CorMatrix)
 
 # Compute the scatter plot matrix
 pairs(data[,3:6], pch = 19)
