@@ -12,9 +12,9 @@ Lectures for GEOL0097 - GEOSTATISTICS, University of Liège, Fall 2022.
 | Date | Topic |
 | --- | --- |
 | September 20 | Lecture 0: [Getting Started with R and RStudio](https://rpubs.com/milkias/intro2R) |
-| October 04 | Lecture 1: [Univariate Analysis](https://rpubs.com/milkias/intro2R) |
-| October 11 | Lecture 2: [Bivariate and Multivariate Analysis](https://rpubs.com/milkias/intro2R) |
-| October 18 | Lecture 3: [Univariate and Bivariate Data Visualisation](https://rpubs.com/milkias/intro2R) |
+| October 04 | Lecture 1: [Univariate Analysis](http://rpubs.com/milkias/960895) |
+| October 11 | Lecture 2: [Bivariate and Multivariate Analysis](http://rpubs.com/milkias/960895) |
+| October 18 | Lecture 3: [Univariate and Bivariate Data Visualisation](http://rpubs.com/milkias/960895) |
 | October 25 | Lecture 4: [Spatial Correlation and Variogram)](https://rpubs.com/milkias/intro2R) |
 | November 8 | Lecture 5: [Spatial Inference - Deterministic](https://rpubs.com/milkias/intro2R) |
 | November 15 | Lecture 6: [Variogram Modelling](https://rpubs.com/milkias/intro2R) |
