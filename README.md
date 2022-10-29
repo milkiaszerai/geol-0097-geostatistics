@@ -4,7 +4,7 @@ Lectures for GEOL0097 - GEOSTATISTICS, University of Liège, Fall 2022.
 
 - Instructor: Prof. Dr. Eric PIRARD
 - Teaching Assistant and Practical Lectures Instructor: Milkias Z. SEMEREAB
-- When: Fall 2022, Friday 8:30 AM
+- When: Fall 2022, Tuesday 2:00 PM
 - Classroom: B-52 (0/523) [Sart-Tilman Campus - Polytech]
 
 ## Agenda
