@@ -8,7 +8,7 @@ library(Rcpp)
 library(RGeostats)
 library(fields)
 
-
+search()
 #Working Directory
 getwd()
 
@@ -66,7 +66,7 @@ hist(data$lead,col="blue", xlab="Values",main="lead concentrations")
 hist(data$zinc,col="blue", xlab="Values",main="zinc concentrations")
 
 #Using loop (2x2 sub-screens)
-par(mfrow=c(2,2)) 
+par(mfrow=c(1,1)) 
 for(j in 1:4)
   {hist(data[,j+2],col="blue", xlab="Values",main=colnames(data)[j+2])}
 
@@ -96,15 +96,6 @@ v = c(1,2,3,4,8)
 for (j in 1:5) {
   print(v[j])
 }
-
-
-
-
-
-
-
-
-
 
 
 # Log-transform the highly-skewed distribution of heavy metal concentration.
@@ -183,6 +174,61 @@ histogram(~ data$logZn|as.factor(data$soil),col="blue",
           xlab=expression(paste("log"[10],"(Zn)",sep="")))
 boxplot(data$zinc~data$ffreq,col="blue",xlab="Flood Frequency Class", 
         ylab=expression(paste("(Zn)")))
+
+
+# Structural Analysis
+
+# abline () = add Straight line to a an existing Plot
+# lm() = fits Linear Models (e.g. linear  regression)
+
+# #What is the distribution/spatial continuity of Zn values through x-directions?
+plot(data$zinc ~ data$x, xlab="Easting", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$x), col="red")
+
+# #What is the distribution/spatial continuity of Zn values through y-directions?
+plot(data$zinc ~ data$y, xlab="Northing", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$y), col="red")
+
+# #What is the distribution/spatial continuity of Zn values through z-directions?
+plot(data$zinc ~ data$elev, xlab="Elevation", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$elev), col="red")
+
+
+
+## Distance Function ##
+distance<-function(x,y)
+{
+  dist=sqrt(outer(x,x,"-")^2+outer(y,y,"-")^2)
+  return(dist)
+}
+## h-scatterplot Function ##
+hscatterplot=function(x,y,grade,hdist_min,hdist_max)
+{
+  Dist_Mat=distance(x,y)
+  Val_Mat=expand.grid(grade,grade)
+  scatter_points=cbind(Val_Mat,c(Dist_Mat))
+  colnames(scatter_points)=c("Z1","Z2","Lag")
+  ix=which(as.numeric((scatter_points$Lag>hdist_min)&(scatter_points$Lag<=hdist_max))==T)
+  rval= round(cor(scatter_points[ix,1], scatter_points[ix,2]),3)
+  plot(scatter_points[ix,1],scatter_points[ix,2],xlab="z(x)",ylab="z(x+h)",
+  main=substitute(paste("h"%in%"[",hdist_min,",",hdist_max,"] "," (r=",rval,")",sep=" ")))
+  abline(lm(scatter_points[ix,1]~scatter_points[ix,2]))
+}
+
+
+## Calculation of h-scatterplot for bins (0,80], (80,120], (120,250], (250,500], and (500,1000] ##
+par(mfrow=c(2,3))
+hscatterplot(data$x,data$y,data$zinc,0,80)
+hscatterplot(data$x,data$y,data$zinc,80,120)
+hscatterplot(data$x,data$y,data$zinc,120,250)
+hscatterplot(data$x,data$y,data$zinc,250,500)
+hscatterplot(data$x,data$y,data$zinc,500,1000)
+
+
+
+
+
+
 
 
 
