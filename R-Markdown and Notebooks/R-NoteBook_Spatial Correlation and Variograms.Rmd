@@ -7,362 +7,42 @@ output: html_notebook
 
 *GEOL0097-Geostatistics, University of Liège*
 
-*October 21, 2022*
+**[GitHub Link](https://github.com/milkiaszerai/geol-0097-geostatistics)**
+
+*October 31, 2022*
 
 ------------------------------------------------------------------------
 
 
-##### **Meuse river data set**
+##### **• Structural Analysis**
 
-For this project, you will use the Meuse dataset that is available in CSV format (comma separated values). This data set gives locations and top soil heavy metal concentrations (ppm), along with a number of soil and landscape variables, collected in a flood plain of the river Meuse, near the village Stein. Heavy metal concentrations are bulk sampled from an area of approximately 15 m x 15 m.
-
-**Format:**
-The data frame contains the following columns:
-
-- x a numeric vector: x-coordinate (m) in RDM (Dutch topographical map coordinates)
-- y a numeric vector: y-coordinate (m) in RDM (Dutch topographical map coordinates)
-- cadmium: topsoil cadmium concentration, ppm
-- copper: topsoil copper concentration, ppm
-- lead: topsoil lead concentration, ppm
-- zinc: topsoil zinc concentration, ppm
-- elev: relative elevation
-- om: organic matter, as percentage
-- ffreq: flooding frequency class
-- soil: soil type
-- lime: lime class
-- landuse: landuse class
-- dist: distance to river Meuse (metres), 
-
-**References**    
-
-P.A. Burrough, R.A. McDonnell, 1998. Principles of Geographical Information Systems. Oxford University Press.
-
-
-#### **Task 1: Loading the dataset**
-
-**• Create your working directory:** The working directory/working folder is the default location where R will look for files that you want to load and where it will put any files you save. You can Create your working directory in 2 ways:
-
-- One of the great things about using RStudio Projects is that when you create a new project or open an existing project, it will automatically set your working directory to the appropriate location.
-
-To create a new project in Rstudio: *File \> New Project \> New Directory \> New Project \> Type in the name of the directory to store your project, e.g. "meuse_project"*
-
-- You can also set the working directory manually using the **setwd()** function.
-
-The first method is highly recommended. Once you create the project, use the **getwd()** function to make sure your default working directory is created.
+Before we dive into variogram and spatial modelling, let's visualize and interpret the distribution and spatial continuity of the variables (heavy metals concentration) in the X, Y and Z directions. 
 
 ```{r}
- # Show where your working directory was created:
-getwd()
+# distribution of Zn values through x-direction?
+plot(data$zinc ~ data$x, xlab="Easting", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$x), col="red")
+```
+Note:    
+- abline() = add Straight line to a an existing Plot    
+- lm() = fits Linear Models (e.g. linear regression)
+
+
+ 
+```{r}
+#  distribution of Zn values through y-direction?
+plot(data$zinc ~ data$y, xlab="Northing", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$y), col="red")
 ```
 
-**• Load the "meuse dataset"** into the workspace using the **read.csv()** function and store the dataframe as variable called "data".
-
 ```{r}
-data = read.csv("meuse_data.csv")
-```
-
-*Note:* the meuse.csv dataset should be inside the working directory, otherwise R won't be able to find the file and will therefore throw an error.
-
-#### **Task 2: Quick Exploratory Data Analysis (EDA)**
-
-To have a look at your dataset, you can use the following methods:
-
-- "Environment" tab in the top right window lists the variables and functions present in the current R session. To display the full dataframe, click on the "data" variable on the Environment tab.
-
-- When you work with large datasets and data frames, your first task as a geostatistician is to develop a clear understanding of its structure and main elements. Therefore, it is often useful to show only a small part of the entire dataset. The function **head()** enables you to show the first observations of a data frame. Similarly, the function **tail()** prints out the last observations in your dataset.
-
-- Another method that is often used to get a rapid overview of your data is the function **str()** which shows you the structure of your dataset including the total number of observations, the total number of variables, the data type of each variable and the first observations etc..
-
-```{r}
-head(data)
-tail(data)
-str(data)
+# distribution of Zn values through z-direction?
+plot(data$zinc ~ data$elev, xlab="Elevation", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$elev), col="red")
 ```
 
 **Questions:**
 
-- How many observations (samples or data points) and variables (fields or attributes) the meuse datset have?
-
-- Which variables contain the spatial data ? (note: spatial = geographical location)
-
-- How many continuous variables are there? How many categorical variables are there?  
-  
-<br>
-    
-
-#### **Task 3: Spatial Data Visualization**
-
-**• Visualization of samples location**
-
-```{r}
-plot(data[,1],data[,2],pch=16,cex=0.5, xlab = "Easting(m)", ylab = "Northing(m)",main="Sample Locations",asp=1)
-```
-
-The plot() function took the following arguments:
-
-- data[ ,1] and data[ ,2] = the latitude/X and longitude/Y of all the sample points.
-- pch = Plot character. Try to change pch to any other number between 1 and 25.
-- cex = point size
-- xlab, ylab and main = to put text label for the x-axis, y-axis and head respectively.
-- asp = set the aspect ratio of the plot
-
-
-**Questions:**
-
-- What can you tell about the sampling campaign(s)?
-- Do you have clusters?
-
-
-**• Visualization of data distribution**
-
-Visualization of heavy metal concentrations in relation to spatial locations.
-
-```{r}
-# cadmium
-plot(data[,1],data[,2],pch=16,cex=2*(data[ ,3] - min(data[ ,3]))/(max
-(data[ ,3]) - min(data[ ,3])),xlab = "Easting(m)", ylab = "Northing(m)", main="cadmium concentrations (ppm)",asp=1)
-# copper
-plot(data[,1],data[,2],pch=16,cex=2*(data[ ,4] - min(data[ ,4]))/(max
-(data[ ,4]) - min(data[ ,4])),xlab = "Easting(m)",ylab = "Northing(m)", main="copper concentrations (ppm)",asp=1)
-# lead
-plot(data[,1],data[,2],pch=16,cex=2*(data[ ,5] - min(data[ ,5]))/(max
-(data[ ,5]) - min(data[ ,5])),xlab = "Easting(m)", ylab = "Northing(m)", main="lead concentrations (ppm)",asp=1)
-# zinc
-plot(data[,1],data[,2],pch=16,cex=2*(data[ ,6] - min(data[ ,6]))/(max
-(data[ ,6]) - min(data[ ,6])),xlab = "Easting(m)", ylab = "Northing(m)", main="zinc concentrations (ppm)",asp=1)
-```
-**Questions:**   
-- Can you see concentration anomalies?   
-- Can you observe any spatial regions with outliers (high heavy metal concentrations)?
-
-***Hint: The process governing heavy metal distribution seems that polluted sediment is carried by the river, and mostly deposited close to the river bank***
-
-**Note:** Although works well, the above block of code is not efficient. Whenever you write such code, try to use **for loop** to repeat a section of code a known number of times.
-
-```{r}
-for(j in 1:4){
-  plot(data[,1],data[,2],pch=16,cex=2*(data[,j+2]-min(data[,j+2]))/(max
-  (data[,j+2])-min(data[,j+2])),xlab = "Easting(m)", ylab = "Northing(m)",
-  main=paste(colnames(data)[j+2],"concentrations (ppm)",sep=" "),asp=1)
-}
-```
-
-**• Other way to visualize the Data using the library *plot3D***
-
-Plot3D is an R package/library containing many functions for 2D and 3D plotting. To install any package in Rstudio:
-
-- Go to "packages" tab \> click "install" \> type "plot3D" and click install
-- Or use the function **install.packages()**
-
-```{r}
-install.packages("plot3D")
-```
-
-Once the package is installed, you have to import/load it to the workspace. You can do this either by:
-
-- Simplying checking the checkbox beside the package name "Plot3D" in the Packages tab
-- Using the library() function to load packages which are already installed.
-
-```{r}
-library(plot3D)
-```
-
-**scatter2D()** is a function with in **Plot3D** library that is used to polt a Colored scatter plots with a color variable as points.
-
-```{r}
-scatter2D(data[,1], data[,2],colvar=data[,6],pch = 16, xlab = "Easting(m)", ylab = "Northing(m)",clab="zinc",main="zinc concentrations(ppm)", asp=1)
-```
-
-##### **• Visualization of categorical Variables (e.g., Soil Type)**
-
-```{r}
-scatter2D(data[,1],data[,2],colvar=data[,10],col=c("blue", "green", "brown"),pch=16, xlab="Easting(m)", ylab="Northing(m)", clab=colnames(data)[10],main="Soil Type", asp=1, cex=0.8)
-
-# Add legend to the plot using the legend() function
-legend("bottomright",legend=c("Soil - 1","Soil - 2", "Soil - 3"), fill=c("blue", "green", "brown"), cex=1)
-```
-
-#### **Task 4: Univariate EDA**
-
-**• Compute the main descriptive univariate statistics for the 4 heavy metals**
-
-```{r}
-summary(data[ ,3:6])
-```
-
-**Questions:**
-
--   Observe the minimum, first quartile, median, third quartile, and maximum heavy metal concentrations in the sample set?
--   Compare the mean and median.
-
-**• Display histograms and boxplots of all four heavy metals concentrations**
-
-```{r}
-hist(data$cadmium, col="blue", xlab="Values",main="cadmium concentrations")
-hist(data$copper,col="blue", xlab="Values",main="copper concentrations")
-hist(data$lead,col="blue", xlab="Values",main="lead concentrations")
-hist(data$zinc,col="blue", xlab="Values",main="zinc concentrations")
-```
-
-```{r}
-boxplot(data$cadmium,col="blue", xlab="Values",main="cadmium concentrations")
-boxplot(data$copper,col="blue", xlab="Values",main="copper concentrations")
-boxplot(data$lead,col="blue", xlab="Values",main="lead concentrations")
-boxplot(data$zinc,col="blue", xlab="Values",main="zinc concentrations")
-```
-
-**Questions:**
-
-- Describe the distribution of these variables. Do they have a symmetric or skewed distribution?
--   For each variable: Does it appear to have more than one population? Does it appear to be any extreme values ("outliers")?
-
-<br>
-
-#### **Task 5: Log-Transform the data**
-
-The log transformation can be used to make highly skewed distributions less skewed. This can be valuable both for making patterns in the data more interpretable and for helping to meet the assumptions of inferential statistics.   
-
-
-Heavy metal concentration usually is not symmetric. Log-transform the highly-skewed distribution. Using the **log10()** function add four columns to the dataframe (one for each log transformed heavy metal concentration). 
-
-```{r}
-data$logCd = log10(data$cadmium)
-data$logCu = log10(data$copper)
-data$logPb = log10(data$lead)
-data$logZn = log10(data$zinc)
-```
-
-**• Display histograms and boxplots of raw and log transformed heavy metals concentrations side by side**
-
-
-```{r}
-# use par() function to convert the graphical window into 2-by-1 sub-screens 
-par(mfrow=c(1,2)) 
-
-#  Display histograms of raw and log transformed data
-for(j in 1:4){
-  hist(data[,j+2],col="blue", xlab="Values",main=colnames(data)[j+2])
-  hist(data[,j+13],col="red", xlab="Values",main=colnames(data)[j+13])
-}
-```
-
-```{r}
-par(mfrow=c(1,2)) 
-
-#  Display boxplot of raw and log transformed data
-for(j in 1:4){
-  boxplot(data[,j+2],col="blue", xlab="Values",main=colnames(data)[j+2])
-  boxplot(data[,j+13],col="red", xlab="Values",main=colnames(data)[j+13])
-}
-```
-**Questions:**   
-- Difference of distribution between the raw data and log-transformed?   
-- Is the skewness of original distribution changed remarkably?
-
-<br>
-
-#### **Task 6: Statistics vs category**
-
-**• Compute summary statistics (e.g. mean) of all four heavy metal concentrations by some categorical variables (e.g. soil type)**
-
-```{r}
-aggregate(data[ ,3:6], by=list(data$soil), FUN=mean, na.rm=TRUE)
-```
-
--   aggregate() function Splits the data into subsets, computes summary statistics for each, and returns the result in a convenient form.
--   by=list() is a list of grouping elements.
--   FUN = a function to compute the summary statistics which can be applied to all data subsets.
--   na.rm = TRUE excludes missing values when calculating descriptive statistics in R.
-
-**• Display the histogram and boxplot of heavy metals concentrations by some categorical variables**
-
-To do this task, you can use **histogram()** function from the **lattice library** and the already familar **boxplot()** function from the R-Base.
-
-```{r}
-# First install and load the lattice library
-install.packages("lattice")
-library(lattice)
-```
-
-```{r}
-# Histogram of zinc concentrations for each soil type
-histogram(~ data$zinc|as.factor(data$soil),col="blue",xlab= "Zinc concerntration")
-
-# boxplot of zinc concentration for flood frequencies 
-boxplot(data$zinc ~ data$ffreq, col="blue",xlab="Flood Frequency Class", 
-ylab= "Zinc concerntration")
-```
-
-**Questions:**
-
--   which soil type is more contaminated with zinc?
--   Is flood frequency associated with zinc concentration ?
-
-<br>
-
-#### **Task 7: Bivariate EDA**
-
-
-**• Plot scatter plots between two variables (for e.g. zinc and copper)**
-
-```{r}
-plot(data$zinc ~ data$copper, xlab="Copper concentration", ylab="zinc concentration")
-
-plot(data$logZn ~ data$logCu, xlab="log10 Copper concentration", ylab="log10 zinc concentration")
-```
-
-**Questions:**
-
--   Describe the correlation between copper and zinc concentrations.
--   Are there any observations that do not fit the general pattern? What could be the reason(s)?
-
-**• Observe the samples that do not fit the general pattern**
-
-```{r}
-ix=which((data$logZn < 2.6) & (data$logCu > 1.6))
-print(ix)
-print(data[ix, ])
-```
-
-**• Compute the scatter plot matrix for all pairs of variables using pair() function**
-```{r}
-pairs(data[ ,3:6], pch = 19, cex=0.5)
-pairs(data[ ,14:17], pch = 19, cex=0.5)
-```
-
-**• Compute the Pearson correlation matrix**
-
-```{r}
-CorMat = cor(data[ ,3:6])
-print(CorMat) 
-
-# Comput Pearson correlation matrix for log-transformed variables
-CorMatLog = cor(data[ ,14:17])
-print(CorMatLog) 
-```
-
-**Questions:**    
-- Discuss the relationship between the pairs of variables ? The nature (sign) and strength of the relationships?    
-- The possible reason behind this type of correlation between the heavy metals?
-
-**• Compute the Pearson correlation matrix using Corrplot library**
-
-corrplot is an R package that provides a visual exploratory tool on correlation matrix that supports rich visualization method, graphic layout, color and legend. The **corrplot()** function takes an existing correlation matrix as argument
-
-```{r}
-# Install and load corrplot package
-install.packages("corrplot")
-library(corrplot)
-```
-
-```{r}
-# Pearson Correlation Matrix 
-corrplot(CorMat)
-corrplot(CorMatLog)
-```
-
-
-
-
+- Discuss about the distribution/spatial continuity of Zn values through x, y and z directions?
 
 
