@@ -2,9 +2,10 @@
 *.html
 *.nb.html
 
+# Ignore the rsconnect directory
+R-Markdown and Notebooks/rsconnect/
 
-/R-Markdown and Notebooks/*.html
-/R-Markdown and Notebooks/*.nb.html
+# Ignore the R project and history files
 *.RData
 *.Rhistory
 *.Rproj.user/
