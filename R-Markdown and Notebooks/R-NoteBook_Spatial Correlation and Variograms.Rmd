@@ -1,0 +1,48 @@
+---
+title: "Geostatistics - Spatial Correlation and Variograms"
+output: html_notebook
+---
+
+*Milkias Z. SEMEREAB*
+
+*GEOL0097-Geostatistics, University of Liège*
+
+**[GitHub Link](https://github.com/milkiaszerai/geol-0097-geostatistics)**
+
+*October 31, 2022*
+
+------------------------------------------------------------------------
+
+
+##### **• Structural Analysis**
+
+Before we dive into variogram and spatial modelling, let's visualize and interpret the distribution and spatial continuity of the variables (heavy metals concentration) in the X, Y and Z directions. 
+
+```{r}
+# distribution of Zn values through x-direction?
+plot(data$zinc ~ data$x, xlab="Easting", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$x), col="red")
+```
+Note:    
+- abline() = add Straight line to a an existing Plot    
+- lm() = fits Linear Models (e.g. linear regression)
+
+
+ 
+```{r}
+#  distribution of Zn values through y-direction?
+plot(data$zinc ~ data$y, xlab="Northing", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$y), col="red")
+```
+
+```{r}
+# distribution of Zn values through z-direction?
+plot(data$zinc ~ data$elev, xlab="Elevation", ylab="Zn concentration")
+abline(lm(data$zinc ~ data$elev), col="red")
+```
+
+**Questions:**
+
+- Discuss about the distribution/spatial continuity of Zn values through x, y and z directions?
+
+
