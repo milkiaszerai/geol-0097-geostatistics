@@ -225,13 +225,6 @@ hscatterplot(data$x,data$y,data$zinc,250,500)
 hscatterplot(data$x,data$y,data$zinc,500,1000)
 
 
-
-
-
-
-
-
-
 # variograms
 db.data=db.create(x1=data[,1],x2=data[,2],z1=data[,17],flag.grid=FALSE)
 db.data
