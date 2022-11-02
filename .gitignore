@@ -1,5 +1,7 @@
 .html
 .nb.html
+/R-Markdown and Notebooks/.html
+/R-Markdown and Notebooks/.nb.html
 .RData
 .Rhistory
 .Rproj.user/
