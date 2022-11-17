@@ -14,35 +14,136 @@ output: html_notebook
 ------------------------------------------------------------------------
 
 
-##### **• Structural Analysis**
+##### **• Task 1: Structural Analysis**
 
-Before we dive into variogram and spatial modelling, let's visualize and interpret the distribution and spatial continuity of the variables (heavy metals concentration) in the X, Y and Z directions. 
+Before we dive into variogram and spatial modelling, we can use the EDA tools that we know already to visualize and interpret the distribution and spatial continuity of the variables (heavy metals concentration) in the X, Y and Z directions. 
 
 ```{r}
 # distribution of Zn values through x-direction?
-plot(data$zinc ~ data$x, xlab="Easting", ylab="Zn concentration")
-abline(lm(data$zinc ~ data$x), col="red")
+plot(data$logZn ~ data$x, xlab="Easting", ylab="Log-Zn concentration")
+abline(lm(data$logZn ~ data$x), col="red")
 ```
 Note:    
 - abline() = add Straight line to a an existing Plot    
 - lm() = fits Linear Models (e.g. linear regression)
 
-
  
 ```{r}
 #  distribution of Zn values through y-direction?
-plot(data$zinc ~ data$y, xlab="Northing", ylab="Zn concentration")
-abline(lm(data$zinc ~ data$y), col="red")
+plot(data$logZn ~ data$y, xlab="Northing", ylab="Log-Zn concentration")
+abline(lm(data$logZn ~ data$y), col="red")
 ```
 
 ```{r}
 # distribution of Zn values through z-direction?
-plot(data$zinc ~ data$elev, xlab="Elevation", ylab="Zn concentration")
-abline(lm(data$zinc ~ data$elev), col="red")
+plot(data$logZn ~ data$elev, xlab="Elevation", ylab="Log-Zn concentration")
+abline(lm(data$logZn ~ data$elev), col="red")
 ```
 
 **Questions:**
 
 - Discuss about the distribution/spatial continuity of Zn values through x, y and z directions?
+
+
+##### **• Task 2: Introducing RGeostats**
+
+**• RGeostats package:**
+
+For the variography analysis we will use the **RGeostats** package.**RGeostats** is the Geostatistical R Package developed by the Geostatistics Lab of the Geosciences Research Center of MINES ParisTech. RGeostats offers most of the famous geostatistical techniques and it is designed to tackle problems with several variables defined in a space of any dimensions. It is particularly adapted for students or researchers who want to test geostatistical procedures using R scripts. [Link to RGeostats website.](http://rgeostats.free.fr/)
+
+
+To instal RGeostats package:
+- Install the package Rcpp (an interface between R and C++ langauges that is required when using RGeostats). It is in CRAN archieve (R's central packages repository) and you can easily install it just by writing its name in the package window in Rstudio (like we did for corrplot and plot3D). 
+
+- On the other hand, RGeostats is not yet published to CRAN and we need to download and install it manually. [Download RGeostats here.](http://rgeostats.free.fr/download.php)
+
+- Once you download the zip folder, Install RGeostats manually: 
+Click Packages Tab → Install → Select Package Archive File (.zip, .tar.gz) in the Install from slot → Find the corresponding zipped file on your local PC, and click Open → Click Install
+
+- You can check if it is successfully installed by going to the packages window and see if Rgeostats is in the list of installed packages. 
+
+- Load/import Rgeostats package by checking the box or using the library() function.
+
+```{r}
+# Load Rgeostats package
+library(RGeostats)
+```
+
+**• Create standard database**
+
+First we need to turn our data (which is in data.frame class) into a database (DB class) using the function **db.create()**. Once database is created, you can Check its contents using the function print() or db.print().
+
+We will focus on the log-transformed Zn concentrations. The same analysis can be repeated for other heavy metal concentrations (Cd, Cu, and Pb).
+
+```{r} 
+# create a standard DB and store it in a variable called db.data
+db.data = db.create(x1=data[,1], x2=data[,2], z1=data[,17],flag.grid=FALSE)
+
+```
+Where:   
+
+- x1=data[,1] is Easting (m) 
+- x2=data[,2] is Northing (m)
+- z1=data[,17] is LogZn concentration values (ppm)
+
+Remember: Help window and help function are alaways at your disposal. 
+
+```{r}
+# use help() function and ? help operator to access the documentation pages for R functions
+help("db.create")
+?db.create
+```
+
+
+```{r}
+#check the content of the database you just created
+class(db.data)
+db.print(db.data)
+```
+- The first column in the database is a ranking column which contains the value that is the rank of the particular data point where 1 is assigned to the first data point and 155 is assigned to the highest data point.
+
+- Second and third columns are related to the spatial information of the samples (easting and northing) 
+
+- The third corresponds to the attribute being analyzed (logZn). 
+
+**• Graphic representation of the data (proportional representation) using the function db.plot() or plot() :**
+
+```{r}
+# using db.plot() function
+db.plot(
+  db.data,xlab="Easting(m)", 
+  ylab = "Northing(m)",
+  title="LogZn concentration"
+)
+
+# using the usual plot() function
+plot(
+  db.data,
+  xlab="Easting(m)", 
+  ylab = "Northing(m)", 
+  title="LogZn concentration"
+)
+```
+
+Both functions produced the same plot as we did last time but using a different 
+graphic representation. 
+
+
+##### **• Task 3: Variography Analysis**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

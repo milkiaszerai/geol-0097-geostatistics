@@ -178,84 +178,77 @@ boxplot(data$zinc~data$ffreq,col="blue",xlab="Flood Frequency Class",
 
 # Structural Analysis
 
-# abline () = add Straight line to a an existing Plot
-# lm() = fits Linear Models (e.g. linear  regression)
-
-# #What is the distribution/spatial continuity of Zn values through x-directions?
+# What is the distribution/spatial continuity of Zn values through x-directions?
 plot(data$zinc ~ data$x, xlab="Easting", ylab="Zn concentration")
 abline(lm(data$zinc ~ data$x), col="red")
 
-# #What is the distribution/spatial continuity of Zn values through y-directions?
+# What is the distribution/spatial continuity of Zn values through y-directions?
 plot(data$zinc ~ data$y, xlab="Northing", ylab="Zn concentration")
 abline(lm(data$zinc ~ data$y), col="red")
 
-# #What is the distribution/spatial continuity of Zn values through z-directions?
+# What is the distribution/spatial continuity of Zn values through z-directions?
 plot(data$zinc ~ data$elev, xlab="Elevation", ylab="Zn concentration")
 abline(lm(data$zinc ~ data$elev), col="red")
 
 
-
-## Distance Function ##
-distance<-function(x,y)
-{
-  dist=sqrt(outer(x,x,"-")^2+outer(y,y,"-")^2)
-  return(dist)
-}
-## h-scatterplot Function ##
-hscatterplot=function(x,y,grade,hdist_min,hdist_max)
-{
-  Dist_Mat=distance(x,y)
-  Val_Mat=expand.grid(grade,grade)
-  scatter_points=cbind(Val_Mat,c(Dist_Mat))
-  colnames(scatter_points)=c("Z1","Z2","Lag")
-  ix=which(as.numeric((scatter_points$Lag>hdist_min)&(scatter_points$Lag<=hdist_max))==T)
-  rval= round(cor(scatter_points[ix,1], scatter_points[ix,2]),3)
-  plot(scatter_points[ix,1],scatter_points[ix,2],xlab="z(x)",ylab="z(x+h)",
-  main=substitute(paste("h"%in%"[",hdist_min,",",hdist_max,"] "," (r=",rval,")",sep=" ")))
-  abline(lm(scatter_points[ix,1]~scatter_points[ix,2]))
-}
+# abline () = add Straight line to a an existing Plot
+# lm() = fits Linear Models (e.g. linear  regression)
 
 
-## Calculation of h-scatterplot for bins (0,80], (80,120], (120,250], (250,500], and (500,1000] ##
-par(mfrow=c(2,3))
-hscatterplot(data$x,data$y,data$zinc,0,80)
-hscatterplot(data$x,data$y,data$zinc,80,120)
-hscatterplot(data$x,data$y,data$zinc,120,250)
-hscatterplot(data$x,data$y,data$zinc,250,500)
-hscatterplot(data$x,data$y,data$zinc,500,1000)
-
+class(data)
 
 # variograms
-db.data=db.create(x1=data[,1],x2=data[,2],z1=data[,17],flag.grid=FALSE)
-db.data
 
-#Graphic representation
+# First create a standard database
+db.data = db.create(x1=data[,1], x2=data[,2], z1=data[,17],flag.grid=FALSE)
+
+print(db.data)
+
+class(db.data)
+
+?db.create   
+
+# or
+help("db.create")
+
+#Graphic representation of the database
 db.plot(db.data,xlab = "Easting(m)", ylab = "Northing(m)",title="LogZn concentration")
-plot(db.data,xlab = "Easting(m)", ylab = "Northing(m)",title="Log   Zn concentration")
+
+# or
+plot(db.data,xlab = "Easting(m)", ylab = "Northing(m)",title="LogZn concentration")
+
 
 ## Compute and display the omni-directional EXPERIMENTAL variogram
 
 # Diagonal Geographic Domain
 D=sqrt((max(data[,1])-min(data[,1]))^2 + (max(data[,2])-min(data[,2]))^2)
 
-# number of lags
+print(D)
+
+# number of lags (The distances between pairs at which the variogram is calculated are called lags)
 nlag=10
+class(nlag)
 
-# calculate variogram
-Vario_E1=vario.calc(db.data,nlag=nlag,lag=D/(2*nlag))
+# calculate variogram [vario.calc() Computes experimental variograms]
+# nlag by default is 10. 
+Vario_E1 = vario.calc(db.data, nlag=10,lag=D/(2*nlag))
 
-Vario_E1
+print(Vario_E1)
+class(Vario_E1)
 
 # PLot variogram
-vario.plot(Vario_E1,npairdw = 2,npairpt=1,varline =F,
-title="Omni-directional Experimental Variogram",col="blue",lty=2,xlab="Distance(m)",ylab="Variogram")
+vario.plot(Vario_E1, npairdw=1, npairpt=1,varline=T,
+title="Omni-directional Experimental Variogram", col="blue",lty=2,xlab="Distance(m)",ylab="Variogram")
 
 #Fit automatically a variogram model on the omni-directional experimental variogram.
 
-Vario_M1=model.auto(Vario_E1,struct = melem.name(c(1,3)),draw=FALSE)
-Vario_M1
-vario.plot(Vario_E1,npairdw=1,npairpt=1,varline =1,
-title="10 lags (nugget effect + sph)",reset=TRUE,col="blue",lty=2, xlab="Distance(m)",ylab="Variogram")
+Vario_M1 = model.auto(Vario_E1, struct=melem.name(c(1,3)),draw=FALSE)
+
+print(Vario_M1)
+class(Vario_M1)
+
+vario.plot(Vario_E1,npairdw=1,npairpt=1, varline=1,
+title="10 lags (nugget effect + spherical)",reset=TRUE,col="blue",lty=2, xlab="Distance(m)",ylab="Variogram")
 model.plot(Vario_M1 ,vario=Vario_E1,add=T,col="red")
 
 
@@ -279,6 +272,9 @@ vario.plot(Vario_E2,npairdw=1,npairpt=1,varline =1,
 title="20 lags (nugget effect + exponential)",reset=TRUE,col="blue",lty=2, xlab="Distance(m)",ylab="Variogram")
 model.plot(Vario_M2 ,vario=Vario_E2,add=T,col="green")
 
+
+# If the variogram of a spatial variable is only a distance function and does not 
+# vary along with different directions, this phenomenon is called “Isotropy.”
 
 
 # Compute the experimental directional variogram in four directions: North-South Direction (90°), East-West Direction (0°), North-West South-East Direction (45°), and North-East SouthWest Direction (135°).
@@ -312,6 +308,10 @@ Vario_Map=vmap.calc(db.data,nx=20,ny=20)
 Vario_Map
 
 plot(Vario_Map,title="Variographic Map")
+
+
+
+
 
 
 # Kriging
