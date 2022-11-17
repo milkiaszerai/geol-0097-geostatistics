@@ -1,5 +1,3 @@
-<base target="_blank">
-
 # GEOL0097 - GEOSTATISTICS 
 
 Lectures for GEOL0097 - GEOSTATISTICS, University of Liège, Fall 2022.
