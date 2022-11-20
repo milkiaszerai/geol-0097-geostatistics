@@ -110,19 +110,10 @@ db.print(db.data)
 
 ```{r}
 # using db.plot() function
-db.plot(
-  db.data,xlab="Easting(m)", 
-  ylab = "Northing(m)",
-  title="LogZn concentration"
-)
+db.plot(db.data,xlab="Easting(m)", ylab = "Northing(m)", title="LogZn concentration")
 
 # using the usual plot() function
-plot(
-  db.data,
-  xlab="Easting(m)", 
-  ylab = "Northing(m)", 
-  title="LogZn concentration"
-)
+plot(db.data, xlab="Easting(m)", ylab = "Northing(m)", title="LogZn concentration")
 ```
 
 Both functions produced the same plot as we did last time but using a different 
@@ -170,10 +161,13 @@ nlag=20
 
 # Compute the omni-directional experimental variogram with 20 lags. you can call it Vario_E2
 Vario_E2=vario.calc(db.data,nlag=nlag,lag=D/(2*nlag))
-
-# display the variogram characteristics
-Vario_E2
 ```
+
+```{r}
+# display the variogram characteristics
+print(Vario_E2)
+```
+
 ```{r}
 # Plot the omni-directional experimental variogram with 20 lags
 vario.plot(Vario_E2,npairdw = 2,npairpt=1,varline =TRUE,title="Omni-directional Experimental Variogram - 20 Lags",col="blue",lty=2,xlab="Distance(m)", ylab="Variogram")
@@ -197,9 +191,9 @@ There are two rules of thumb for selecting a lag size/lag number:
 
 2. The lag size times the number of lags should be about half of the largest distance among all points (half diagonal distance). This condition taken care of by RGeostats for us. Remeber why we defined D.      
 
-3. A variogram with as small as possible lag size is preferred so that the spatial variability in the short-range will not be smoothed.   
+3. A variogram with as small as possible lag size is preferred so that the spatial variability in the short-range will not be smoothed.             
 
-4.At least 3 variogram plots are needed before reaching sill (i.e. before losing spatial correlation) 
+4. At least 3 variogram plots are needed before reaching sill (i.e. before losing spatial correlation) 
 
 
 **• Fit automatically a variogram model on the omni-directional experimental variogram**
@@ -237,6 +231,7 @@ legend("bottomright",legend=c("Empirical Variogram","Fitted Variogram (Model)"),
 Vario_M2 = model.auto(Vario_E1, struct = melem.name(c(1,2)), draw=FALSE)
 print(Vario_M2)
 ```
+
 ```{r}
 # Fit Gaussian isotropic model on Vario_E1 and display model characteristics
 Vario_M3 = model.auto(Vario_E1,struct = melem.name(c(1,4)),draw=FALSE)
@@ -342,14 +337,28 @@ legend("bottomright", legend=c("Direction 0°","Direction 45°","Direction 90°"
 - What is the direction of maximum spatial continuity?
 - can you detect Anisotropy ?
 
-Note:
+**Isotropy and Anisotropy:** general speaking, the procedures of distinguishing between isotropy and anisotropy are the same. We can fit a variogram model along all the directions and then obtain different variograms along with different directions. Once we obtain the values of Still, Range, Nugget Effect from all variograms, we can determine if the spatial data is isotropic or anisotropic. If the values of Still, Range, Nugget Effect from the variogram along with all directions are all the same, then it is isotropic; otherwise, it is the anisotropic.
+
+
+Anisotropy, according to its different structures, could be divided into:      
+
+- Geometric Anisotropy: the sill value of the geometric anisotropic variogram only vary along with distances, but not along with directions. In other words, when the distances between samples in various spatial angles are the same, their Sill is the same, but their ranges may vary along with different angles. The direction having biggest range is the direction of variogram. This range is called “Major Range”, and this variogram is called Directional Variogram. The smallest range is called “Minor Range”. 
+
+![Fig 1: Geometric anisotropy](geometric.png)
+
+- Zonal Anisotropy: the Sill value of the zonal anisotropic variogram does not only vary along with all distances, but also varies along with all directions. In other words, when the distances between samples in any spatial angles are the same, their Sill values are not the same, and their ranges also vary along with different angles. Zonal Anisotropic variogram model consists of 2 or more anisotropic variograms. Natural phenomena usually do not have this kind of anisotropy.
+
+![Fig 2: Zonal anisotropy](zonal.png)
+
+- Mixed Anisotropy: is a mix of the Geometric Anisotropy and Zonal Anisotropy . Its Sill values and ranges vary along with all directions. Natural phenomena often have this kind of spatial variability. For example, geological changes usually have a bigger effective range in the horizon direction than in the vertical direction, and changes in the vertical driection have a bigger range than in the horizon direction.
+
+![Fig 3: Mixed anisotropy](mixed.png)
 
 
 
- Isotropic: if the directional variograms have the same sill and the same range.
- Zonal anisotropy: is seen when variograms have different sills but the same range.
- Geometric anisotropy: is indicated by directional variograms that have the same sill, 
-but different ranges.
+
+
+
 
 
 

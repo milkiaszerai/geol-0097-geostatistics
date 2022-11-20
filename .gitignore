@@ -2,6 +2,9 @@
 *.html
 *.nb.html
 
+# Ignore images
+*.png
+
 # Ignore the rsconnect directory
 R-Markdown and Notebooks/rsconnect/
 
@@ -9,3 +12,4 @@ R-Markdown and Notebooks/rsconnect/
 *.RData
 *.Rhistory
 *.Rproj.user/
+.Rproj.user
