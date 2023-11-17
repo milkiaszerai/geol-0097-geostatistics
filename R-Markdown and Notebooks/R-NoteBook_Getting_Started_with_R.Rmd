@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with R"
+title: "Getting Started with R programming"
 output:
   html_document:
     df_print: paged
